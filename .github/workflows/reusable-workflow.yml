@@ -12,7 +12,6 @@ on:
 jobs: 
   build:
     runs-on: ubuntu-latest
-
     steps: 
       - name: checkout repo
         uses: actions/checkout@v3
@@ -27,9 +26,7 @@ jobs:
 
   test: 
     needs: build
-
     runs-on: ubuntu-latest
-
     steps: 
       - name: checkout repo
         uses: actions/checkout@v3
@@ -41,3 +38,9 @@ jobs:
           
       - run: npm install
       - run: npm run test
+
+  done:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello Message
+        run: echo "Hello, world!"
