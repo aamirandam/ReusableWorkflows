@@ -1,9 +1,9 @@
-# This is a basic workflow to help you get started with Actions
-name: CI
+# The "Caller" workflow
+# https://resources.github.com/learn/pathways/automation/intermediate/create-reusable-workflows-in-github-actions/
+# https://docs.github.com/en/actions/using-workflows/reusing-workflows
+name: CI with reusable and external workflows 
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
   pull_request:
@@ -12,36 +12,38 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# Sequential jobs run in parallel
 jobs:
+  # Job that calls a reusable workflow with the possibility to pass data
   call-workflow-passing-data:
     uses: ./.github/workflows/reusable-workflow.yml
     with:
       node-version: 'v16.14.0'
+    # Can enable to set secrets and pass them through environment variables  
     #secrets:
-     # envPAT: ${{ secrets.envPAT }}
+     #envPAT: ${{ secrets.envPAT }}
 
+  # Job that calls a reusable 'external' workflow with the possibility to pass data
+  # Commit Sha, Release Tag or Branch Name is required 
   call-external-workflow-passing-data:
     uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.0.0
     with:
       node-version: 'v16.14.0'
      
-  # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Build message
+        run: echo PoC Running build! Post reusable workflows...
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo PoC Build continues...,
+          echo PoC Build finishes.
