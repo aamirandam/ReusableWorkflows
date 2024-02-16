@@ -1,4 +1,4 @@
-# The "Caller" workflow
+# The "Caller" workflow ...
 # https://resources.github.com/learn/pathways/automation/intermediate/create-reusable-workflows-in-github-actions/
 # https://docs.github.com/en/actions/using-workflows/reusing-workflows
 name: CI with reusable and external workflows 
