@@ -20,7 +20,12 @@ jobs:
       node-version: 'v16.14.0'
     #secrets:
      # envPAT: ${{ secrets.envPAT }}
-      
+
+  call-external-workflow-passing-data:
+    uses: aamirandam/ExternalWorkflow/.github/workflows/reusable-workflow.yml@v1
+    with:
+      node-version: 'v16.14.0'
+     
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
