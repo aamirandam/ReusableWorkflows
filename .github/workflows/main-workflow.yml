@@ -26,21 +26,23 @@ jobs:
   # Job that calls a reusable 'external' workflow with the possibility to pass data
   # Commit Sha, Release Tag or Branch Name is required 
   call-external-workflow-passing-data:
+    needs: call-workflow-passing-data
     uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.0.0
     with:
       node-version: 'v16.14.0'
      
   build:
-    # The type of runner that the job will run on
+    needs: [call-workflow-passing-data, call-external-workflow-passing-data]
     runs-on: ubuntu-latest
-
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
       - name: Build message
-        run: echo PoC Running build! Post reusable workflows...
+        run: | 
+          echo ...
+          echo PoC Running build! Post reusable workflows...
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
