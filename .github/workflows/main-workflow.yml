@@ -22,7 +22,7 @@ jobs:
      # envPAT: ${{ secrets.envPAT }}
 
   call-external-workflow-passing-data:
-    uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@poc-v1.0.0
+    uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.0.0
     with:
       node-version: 'v16.14.0'
      
