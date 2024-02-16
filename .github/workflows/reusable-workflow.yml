@@ -48,6 +48,7 @@ jobs:
 
   done:
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Print Completed Message
         run: echo "Finished running local reusable workflow"
