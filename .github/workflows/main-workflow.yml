@@ -27,7 +27,7 @@ jobs:
   # Commit Sha, Release Tag or Branch Name is required 
   call-external-workflow-passing-data:
     needs: call-workflow-passing-data
-    uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.0.0
+    uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.2.0
     with:
       node-version: 'v16.14.0'
      
