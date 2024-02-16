@@ -18,8 +18,8 @@ jobs:
     uses: ./.github/workflows/reusable-workflow.yml
     with:
       node-version: 'v16.14.0'
-    secrets:
-      envPAT: ${{ secrets.envPAT }}
+    #secrets:
+     # envPAT: ${{ secrets.envPAT }}
       
   # This workflow contains a single job called "build"
   build:
