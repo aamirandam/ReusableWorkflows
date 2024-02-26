@@ -5,13 +5,16 @@ on:
     inputs:
       repository_full_name:
         description: 'Repository full name'
-        required: true        
+        required: true     
+        type: string
       client_payload_ref:
         description: 'Client payload reference'
         required: true
+        type: string
       build_status_message:
         description: 'Specifies whether the build failed or passed'
         required: false   
+        type: string
       environment: 
         description: 'Environment specific'
         required: true
