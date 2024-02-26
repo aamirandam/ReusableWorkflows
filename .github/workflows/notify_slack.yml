@@ -36,6 +36,6 @@ jobs:
       run: |
         echo Secrets: slack bot token: ${{ secrets.SLACK_BOT_TOKEN }}
         echo Secrets: core bots: ${{ secrets.CORE_BOTS }}
-        echo inputs: status msg: ${{ github.event.inputs.build_status_message }}
-        echo inputs: repo full name: ${{ github.event.inputs.repository_full_name }}
-        echo inputs: client payload ref ${{  github.event.inputs.client_payload_ref }}
+        echo inputs: status msg: ${{ inputs.build_status_message }}
+        echo inputs: repo full name: ${{ inputs.repository_full_name }}
+        echo inputs: client payload ref ${{  inputs.client_payload_ref }}
