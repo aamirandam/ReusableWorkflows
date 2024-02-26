@@ -1,7 +1,7 @@
 name: Notify slack
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       repository_full_name:
         description: 'Repository full name'
