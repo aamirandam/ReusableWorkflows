@@ -29,7 +29,13 @@ jobs:
     - name: Notify slack
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: pullreminders/slack-action@master
-      with:
-        args: '{\"channel\":\"${{ secrets.CORE_BOTS }}\",\"text\":\"${{ github.event.inputs.build_status_message }} ${{ github.event.inputs.repository_full_name }}/${{  github.event.inputs.client_payload_ref }} container\"}'
-
+        CORE_BOTS: ${{ secrets.CORE_BOTS }}
+      #uses: pullreminders/slack-action@master
+      #with:
+      #  args: '{\"channel\":\"${{ secrets.CORE_BOTS }}\",\"text\":\"${{ github.event.inputs.build_status_message }} ${{ github.event.inputs.repository_full_name }}/${{  github.event.inputs.client_payload_ref }} container\"}'
+      run: |
+        echo Secrets: slack bot token: ${{ secrets.SLACK_BOT_TOKEN }}
+        echo Secrets: core bots: ${{ secrets.CORE_BOTS }}
+        echo inputs: status msg: ${{ github.event.inputs.build_status_message }}
+        echo inputs: repo full name: ${{ github.event.inputs.repository_full_name }}
+        echo inputs: client payload ref ${{  github.event.inputs.client_payload_ref }}
