@@ -1,0 +1,32 @@
+name: Notify slack
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository_full_name:
+        description: 'Repository full name'
+        required: true        
+      client_payload_ref:
+        description: 'Client payload reference'
+        required: true
+      build_status_message:
+        description: 'Specifies whether the build failed or passed'
+        required: false   
+      environment: 
+        description: 'Environment specific'
+        required: true
+        type: string
+
+jobs:
+  notify-slack:
+    name: Notify Slack
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Notify slack
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      uses: pullreminders/slack-action@master
+      with:
+        args: '{\"channel\":\"${{ secrets.CORE_BOTS }}\",\"text\":\"${{build_status_message}} ${{ github.event.inputs.repository_full_name }}/${{  github.event.inputs.client_payload_ref }} container\"}'
+
