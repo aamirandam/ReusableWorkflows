@@ -1,0 +1,38 @@
+name: Create env file
+on:
+  workflow_call: 
+    inputs:
+      environment:
+        description: 'Environment to be deployed to'
+        required: true
+        type: string
+
+  repository_dispatch:
+    types: [deploy-dev, deploy-staging, deploy-prod]
+
+# Considered secure as they are scoped to the workflow run and are not exposed to the outside world
+env:
+  NOTIFY-SLACK-PATH: ./custom_actions/notify_slack.yml
+
+jobs:
+  create-env-file:
+    name: Create env file
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Create env file"
+      run: |
+        touch .env
+        echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
+        echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
+        echo AUTH_TOKEN=${{ secrets.AUTH_TOKEN }} >> .env
+        echo CONTENTFUL_ACCESS_TOKEN=${{ secrets.CONTENTFUL_ACCESS_TOKEN }} >> .env
+        echo CONTENTFUL_CHEDDAR_CDA_TOKEN=${{ secrets.CONTENTFUL_CHEDDAR_CDA_TOKEN }} >> .env
+        echo CONTENTFUL_CHEDDAR_SPACE_ID=${{ secrets.CONTENTFUL_CHEDDAR_SPACE_ID }} >> .env
+        echo CONTENTFUL_ENVIRONMENT_ID=${{ secrets.CONTENTFUL_ENVIRONMENT_ID }} >> .env
+        echo CONTENTFUL_NEWS12_CDA_TOKEN=${{ secrets.CONTENTFUL_NEWS12_CDA_TOKEN }} >> .env
+        echo CONTENTFUL_NEWS12_SPACE_ID=${{ secrets.CONTENTFUL_NEWS12_SPACE_ID }} >> .env
+        echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> .env
+        echo SLACK_FEED_ALERT_WEBHOOK_URL=${{ secrets.SLACK_FEED_ALERT_WEBHOOK_URL }} >> .env
+        cat .env
+        ls -al
