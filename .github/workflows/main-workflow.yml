@@ -18,7 +18,8 @@ jobs:
     uses: ./.github/workflows/notify_slack.yml
     with:
       repository_full_name: 'test'
-      client_payload_ref: 'test'      
+      client_payload_ref: 'test'    
+      build_status_message: 'success'
       environment: 'dev'
     secrets: inherit
     
