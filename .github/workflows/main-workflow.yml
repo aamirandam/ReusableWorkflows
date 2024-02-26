@@ -23,6 +23,12 @@ jobs:
       environment: 'dev'
     secrets: inherit
     
+  create-env-file:
+    uses: ./.github/workflows/create-env-file.yml
+    with:
+      environment: 'dev'
+    secrets: inherit
+    
   # Job that calls a reusable workflow with the possibility to pass data
   call-workflow-passing-data:
     uses: ./.github/workflows/reusable-workflow.yml
