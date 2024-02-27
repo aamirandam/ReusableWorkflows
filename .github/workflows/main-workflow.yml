@@ -55,6 +55,15 @@ jobs:
     #secrets:
      #envPAT: ${{ secrets.envPAT }}
 
+  call-build-image:
+    uses: ./.github/workflows/build-image.yml
+    with:
+      region: "dkr.ecr.us-east-1.amazonaws.com"
+      latest: "cheddartv/antenna:latest"
+      stable: "cheddartv/antenna:stable"
+      environment: 'dev'
+    secrets: inherit
+    
   # Job that calls a reusable 'external' workflow with the possibility to pass data
   # Commit Sha, Release Tag or Branch Name is required 
   call-external-workflow-passing-data:
