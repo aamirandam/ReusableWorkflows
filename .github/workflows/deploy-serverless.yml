@@ -12,7 +12,7 @@ on:
 
 # Considered secure as they are scoped to the workflow run and are not exposed to the outside world
 env:
-  NOTIFY-SLACK-PATH: ./composite_actions/notify_slack.yml
+  NOTIFY-SLACK-PATH: ./.github/workflows/notify_slack.yml
   REPOSITORY_FULL_NAME: ${{ github.event.repository.full_name }}
   CLIENT_PAYLOAD_REF: ${{ github.event.client_payload.ref }}
 
