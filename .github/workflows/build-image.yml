@@ -1,0 +1,82 @@
+name: Build image and push
+
+on:
+  workflow_call:
+      inputs:
+        region:
+          description: 'AWS region' #.dkr.ecr.us-east-1.amazonaws.com
+          required: true
+          type: string
+        latest:
+          description: 'latest'     # cheddartv/antenna:latest
+          required: true
+          type: string
+        stable:
+          description: 'stable'     # cheddartv/antenna:stable
+          required: true
+          type: string
+jobs:          
+  build-image:
+    name: Build Image
+    runs-on: ubuntu-latest
+    if: ${{ github.ref=='refs/heads/master'}}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: get job url
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: Build Image
+
+  call-create-env-file:
+    name: Create env file
+    needs: build-image
+    runs-on: ubuntu-latest
+    if: ${{ github.ref=='refs/heads/master'}}
+    steps:
+      - name: Create env file
+        uses: ./.github/workflows/create-env-file.yml
+        
+  set-up-docker-and-push:
+    name: Set up docker build
+    needs: call-create-env-file
+    runs-on: ubuntu-latest
+    if: ${{ github.ref=='refs/heads/master'}}
+    steps:
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Amazon ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Build and Push Image
+        id: build-push
+        uses: docker/build-push-action@v2
+        env:
+          REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}
+        with:
+          context: .
+          build-args: |
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AUTH_TOKEN=${{ secrets.AUTH_TOKEN }}
+            CONTENTFUL_ACCESS_TOKEN=${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+            CONTENTFUL_CHEDDAR_CDA_TOKEN=${{ secrets.CONTENTFUL_CHEDDAR_CDA_TOKEN }}
+            CONTENTFUL_CHEDDAR_SPACE_ID=${{ secrets.CONTENTFUL_CHEDDAR_SPACE_ID }}
+            CONTENTFUL_ENVIRONMENT_ID=${{ secrets.CONTENTFUL_ENVIRONMENT_ID }}
+            CONTENTFUL_NEWS12_CDA_TOKEN=${{ secrets.CONTENTFUL_NEWS12_CDA_TOKEN }}
+            CONTENTFUL_NEWS12_SPACE_ID=${{ secrets.CONTENTFUL_NEWS12_SPACE_ID }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            SLACK_FEED_ALERT_WEBHOOK_URL=${{ secrets.SLACK_FEED_ALERT_WEBHOOK_URL }}
+          push: true
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}/${{ latest }}
+            ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}/${{ stable }}-${{ github.sha }}
