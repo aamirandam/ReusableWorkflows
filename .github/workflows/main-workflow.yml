@@ -39,7 +39,7 @@ jobs:
     secrets: inherit
 
   deploy-serverless:
-    uses: ./.github/workflows/deploy_serverless.yml
+    uses: "./.github/workflows/deploy_serverless.yaml@${{ github.ref_name }}"
     with:
       repository_full_name: ${{ github.event.repository.full_name }}      
       client_payload_ref: ${{ github.event.client_payload.ref }}   
