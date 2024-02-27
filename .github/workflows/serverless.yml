@@ -1,1 +1,27 @@
 
+name: Deploy to dev using serverless
+on:
+  workflow_call:
+    inputs:
+      repository_full_name:
+        description: 'Repository full name'
+        required: true     
+        type: string
+      client_payload_ref:
+        description: 'Client payload reference'
+        required: true
+        type: string 
+      environment:
+        description: 'Environment to run'
+        required: true
+        type: string
+
+jobs:
+  deploy-to-dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    steps:          
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          ref: ${{ inputs.client_payload_ref }}
