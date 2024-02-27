@@ -15,6 +15,10 @@ on:
           description: 'stable'     # cheddartv/antenna:stable
           required: true
           type: string
+        sha:
+          description: 'Sha'
+          required: true
+          type: string
         environment:
           description: 'Environment to deploy'
           required: true
@@ -82,5 +86,5 @@ jobs:
             SLACK_FEED_ALERT_WEBHOOK_URL=${{ secrets.SLACK_FEED_ALERT_WEBHOOK_URL }}
           push: true
           tags: |
-            ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}/${{ latest }}
-            ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}/${{ stable }}-${{ github.sha }}
+            ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}/${{ inputs.latest }}
+            ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{ inputs.region }}/${{ inputs.stable }}-${{ inputs.sha }}
