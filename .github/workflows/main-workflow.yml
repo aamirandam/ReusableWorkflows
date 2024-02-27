@@ -54,15 +54,6 @@ jobs:
     # Can enable to set secrets and pass them through environment variables  
     #secrets:
      #envPAT: ${{ secrets.envPAT }}
-
-  call-build-image:
-    uses: ./.github/workflows/build-image.yml
-    with:
-      region: "dkr.ecr.us-east-1.amazonaws.com"
-      latest: "cheddartv/antenna:latest"
-      stable: "cheddartv/antenna:stable"
-      environment: 'dev'
-    secrets: inherit
     
   # Job that calls a reusable 'external' workflow with the possibility to pass data
   # Commit Sha, Release Tag or Branch Name is required 
@@ -71,7 +62,17 @@ jobs:
     uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.2.0
     with:
       node-version: 'v16.14.0'
-     
+
+  call-build-image:
+    needs: call-external-workflow-passing-data
+    uses: ./.github/workflows/build-image.yml
+    with:
+      region: "dkr.ecr.us-east-1.amazonaws.com"
+      latest: "cheddartv/antenna:latest"
+      stable: "cheddartv/antenna:stable"
+      environment: 'dev'
+    secrets: inherit
+    
   build:
     needs: [call-workflow-passing-data, call-external-workflow-passing-data]
     runs-on: ubuntu-latest
