@@ -65,7 +65,7 @@ jobs:
 
   call-build-image:
     needs: call-external-workflow-passing-data
-    uses: ./.github/workflows/build-image.yml
+    uses: ./.github/workflows/action.yml
     with:
       region: "dkr.ecr.us-east-1.amazonaws.com"
       latest: "cheddartv/antenna:latest"
