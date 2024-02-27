@@ -37,14 +37,6 @@ jobs:
       sha: ${{ github.sha }}
       environment: 'dev'
     secrets: inherit
-
-  call-deploy-serverless:
-    uses: ./.github/workflows/deploy_serverless.yaml
-    with:
-      repository_full_name: ${{ github.event.repository.full_name }}      
-      client_payload_ref: ${{ github.event.client_payload.ref }}   
-      environment: 'dev'
-    secrets: inherit
     
   # Job that calls a reusable workflow with the possibility to pass data
   call-workflow-passing-data:
