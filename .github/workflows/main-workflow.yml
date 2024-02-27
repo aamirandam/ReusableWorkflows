@@ -32,7 +32,7 @@ jobs:
   ecr-upload:
     uses: ./.github/workflows/ecr-upload.yml
     with:
-      repository_full_name: 'test'
+      repository_full_name: ${{ github.event.repository.full_name }}
       actor: ${{ github.actor }}
       sha: ${{ github.sha }}
       environment: 'dev'
@@ -41,8 +41,8 @@ jobs:
   call-deploy-serverless:
     uses: ./.github/workflows/deploy-serverless.yml
     with:
-      repository_full_name: 'test'  
-      client_payload_ref: 'test' 
+      repository_full_name: ${{ github.event.repository.full_name }}  
+      client_payload_ref: ${{ github.event.client_payload.ref }} 
       environment: 'dev'
     secrets: inherit
     
