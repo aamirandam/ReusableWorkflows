@@ -22,7 +22,7 @@ jobs:
   notify-slack-build:
     uses: ./.github/workflows/notify_slack.yml
     with:
-      repo-full-name: ${{ inputs.repository_full_name }}
+      repository_full_name: ${{ inputs.repository_full_name }}
       client-payload-ref: ${{ inputs.client_payload_ref }}
       environment: 'dev'
     secrets: inherit
@@ -55,7 +55,7 @@ jobs:
     if: ${{ success() && needs.deploy-to-dev.result == 'success' }}
     uses: ./.github/workflows/notify_slack.yml
     with:
-      repo-full-name: ${{ inputs.repository_full_name }}
+      repository_full_name: ${{ inputs.repository_full_name }}
       client-payload-ref: ${{ inputs.client_payload_ref }}
       build-status-message: 'PR Build Complete'
     secrets: inherit
@@ -66,7 +66,7 @@ jobs:
     if: ${{ failure() || needs.deploy-to-dev.result != 'success' }}
     uses: ./.github/workflows/notify_slack.yml
     with:
-      repo-full-name: ${{ inputs.repository_full_name }}
+      repository_full_name: ${{ inputs.repository_full_name }}
       client-payload-ref: ${{ inputs.client_payload_ref }}
       build-status-message: 'PR Build Failed'
     secrets: inherit
