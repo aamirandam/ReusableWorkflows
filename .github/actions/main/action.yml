@@ -25,10 +25,10 @@ runs:
   using: "composite"
   steps:
     - name: build 1
-      uses: ./.github/workflows/build-image-1.yml
+      uses: ./.github/actions/build-image1
       
     - name: create file
-      uses: ./.github/workflows/create-env-file.yml
+      uses: ./.github/workflows/create-env-file
       
     - name: build docker
-      uses: ./.github/workflows/docker-buildx.yml
+      uses: ./.github/actions/build-docker
