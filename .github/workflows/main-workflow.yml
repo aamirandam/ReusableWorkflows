@@ -63,16 +63,7 @@ jobs:
     with:
       node-version: 'v16.14.0'
 
-  call-build-image:
-    needs: call-external-workflow-passing-data
-    uses: ./.github/workflows/action.yml
-    with:
-      region: "dkr.ecr.us-east-1.amazonaws.com"
-      latest: "cheddartv/antenna:latest"
-      stable: "cheddartv/antenna:stable"
-      sha: ${{ github.sha }}
-      environment: 'dev'
-    secrets: inherit
+  
     
   build:
     needs: [call-workflow-passing-data, call-external-workflow-passing-data]
@@ -81,6 +72,15 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      - name: Calling action 
+        uses: ./.github/workflows/action.yml
+        with:
+          region: "dkr.ecr.us-east-1.amazonaws.com"
+          latest: "cheddartv/antenna:latest"
+          stable: "cheddartv/antenna:stable"
+          sha: ${{ github.sha }}
+          environment: 'dev'
+        
       # Runs a single command using the runners shell
       - name: Build message
         run: | 
