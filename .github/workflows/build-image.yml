@@ -27,7 +27,7 @@ jobs:
   build-image:
     name: Build Image
     runs-on: ubuntu-latest
-    if: ${{ github.ref=='refs/heads/master'}}
+    # if: ${{ github.ref=='refs/heads/master'}}
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
     name: Create env file
     needs: build-image
     runs-on: ubuntu-latest
-    if: ${{ github.ref=='refs/heads/master'}}
+    # if: ${{ github.ref=='refs/heads/master'}}
     steps:
       - name: Create env file
         uses: ./.github/workflows/create-env-file.yml
@@ -52,7 +52,7 @@ jobs:
     name: Set up docker build
     needs: call-create-env-file
     runs-on: ubuntu-latest
-    if: ${{ github.ref=='refs/heads/master'}}
+    # if: ${{ github.ref=='refs/heads/master'}}
     steps:
       - name: Set up Docker Buildx
         id: buildx
