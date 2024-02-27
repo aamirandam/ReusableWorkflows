@@ -70,6 +70,7 @@ jobs:
       region: "dkr.ecr.us-east-1.amazonaws.com"
       latest: "cheddartv/antenna:latest"
       stable: "cheddartv/antenna:stable"
+      sha: ${{ github.sha }}
       environment: 'dev'
     secrets: inherit
     
