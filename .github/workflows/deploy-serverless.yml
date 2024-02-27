@@ -20,8 +20,8 @@ on:
 
 # Considered secure as they are scoped to the workflow run and are not exposed to the outside world
 env:
-  REPOSITORY_FULL_NAME: ${{ github.event.repository.full_name }}
-  CLIENT_PAYLOAD_REF: ${{ github.event.client_payload.ref }}
+  REPOSITORY_FULL_NAME: ${{ inputs.repository_full_name }}
+  CLIENT_PAYLOAD_REF: ${{ inputs.client_payload_ref }}
 
 jobs:
   notify-slack-build:
