@@ -65,13 +65,12 @@ jobs:
 
   
     
-  build:
+  finishing:
     needs: [call-workflow-passing-data, call-external-workflow-passing-data]
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v2
       - name: Calling action 
         uses: ./.github/actions/action.yml
         with:
@@ -81,14 +80,4 @@ jobs:
           sha: ${{ github.sha }}
           environment: 'dev'
         
-      # Runs a single command using the runners shell
-      - name: Build message
-        run: | 
-          echo ...
-          echo PoC Running build! Post reusable workflows...
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo PoC Build continues...,
-          echo PoC Build finishes.
+     
