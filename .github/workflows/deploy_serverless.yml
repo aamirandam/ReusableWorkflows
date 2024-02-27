@@ -15,9 +15,6 @@ on:
         required: true
         type: string
 
-  repository_dispatch:
-    types: [deploy-dev, deploy-staging, deploy-prod]
-
 # Considered secure as they are scoped to the workflow run and are not exposed to the outside world
 env:
   REPOSITORY_FULL_NAME: ${{ inputs.repository_full_name }}
