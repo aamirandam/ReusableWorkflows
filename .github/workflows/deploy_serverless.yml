@@ -20,13 +20,12 @@ on:
 
 # Considered secure as they are scoped to the workflow run and are not exposed to the outside world
 env:
-  NOTIFY-SLACK-PATH: ./.github/workflows/notify_slack.yml
   REPOSITORY_FULL_NAME: ${{ inputs.repository_full_name }}
   CLIENT_PAYLOAD_REF: ${{ inputs.client_payload_ref }}
 
 jobs:
   notify-slack-build:
-    uses: ${{ NOTIFY-SLACK-PATH }}
+    uses: ./.github/workflows/notify_slack.yml
     with:
       repo-full-name: $REPOSITORY_FULL_NAME
       client-payload-ref: $CLIENT_PAYLOAD_REF
@@ -62,7 +61,7 @@ jobs:
     name: Notify Slack status for successful deployment
     needs: deploy-to-dev
     if: ${{ success() && needs.deploy-to-dev.result == 'success' }}
-    uses: ${{ NOTIFY-SLACK-PATH }}
+    uses: ./.github/workflows/notify_slack.yml
     with:
       repo-full-name: $REPOSITORY_FULL_NAME
       client-payload-ref: $CLIENT_PAYLOAD_REF
@@ -73,7 +72,7 @@ jobs:
     name: Notify Slack status for failed deployment
     needs: deploy-to-dev
     if: ${{ failure() || needs.deploy-to-dev.result != 'success' }}
-    uses: ${{ NOTIFY-SLACK-PATH }}
+    uses: ./.github/workflows/notify_slack.yml
     with:
       repo-full-name: $REPOSITORY_FULL_NAME
       client-payload-ref: $CLIENT_PAYLOAD_REF
