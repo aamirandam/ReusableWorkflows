@@ -32,6 +32,9 @@ jobs:
   ecr-upload:
     uses: ./.github/workflows/ecr-upload.yml
     with:
+      repository_full_name: 'test'
+      actor: ${{ github.actor }}
+      sha: ${{ github.sha }}
       environment: 'dev'
     secrets: inherit
     
