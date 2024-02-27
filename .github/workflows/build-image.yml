@@ -15,6 +15,10 @@ on:
           description: 'stable'     # cheddartv/antenna:stable
           required: true
           type: string
+        environment:
+          description: 'Environment to deploy'
+          required: true
+          type: string
 jobs:          
   build-image:
     name: Build Image
