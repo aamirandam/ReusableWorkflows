@@ -38,8 +38,8 @@ jobs:
       environment: 'dev'
     secrets: inherit
 
-  deploy-serverless:
-    uses: "./.github/workflows/deploy_serverless.yaml@${{ github.ref_name }}"
+  call-deploy-serverless:
+    uses: ./.github/workflows/deploy_serverless.yaml
     with:
       repository_full_name: ${{ github.event.repository.full_name }}      
       client_payload_ref: ${{ github.event.client_payload.ref }}   
