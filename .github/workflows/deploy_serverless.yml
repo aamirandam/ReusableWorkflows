@@ -39,12 +39,9 @@ jobs:
     outputs:
       output_result: 'success'
       
-    steps:
-      - env:
-          OUTPUT_RESULT: ${{needs.job1.outputs.output_result}}
-          
+    steps:          
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v1
         with:
           ref: $CLIENT_PAYLOAD_REF
 
@@ -59,7 +56,7 @@ jobs:
         run: sls config credentials --provider aws --key ${{secrets.AWS_ACCESS_KEY_ID}} --secret ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Deploy to dev
-        run: echo $OUTPUT_RESULT # serverless deploy --stage dev
+        run: echo "success" # serverless deploy --stage dev
 
   notify-slack-status-success:
     name: Notify Slack status for successful deployment
