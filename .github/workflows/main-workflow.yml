@@ -41,7 +41,7 @@ jobs:
   call-deploy-serverless:
     uses: ./.github/workflows/deploy-serverless.yml
     with:
-      repository_full_name: ${{ github.repository.full_name }}      
+      repository_full_name: 'test'  
       client_payload_ref: 'test' 
       environment: 'dev'
     secrets: inherit
