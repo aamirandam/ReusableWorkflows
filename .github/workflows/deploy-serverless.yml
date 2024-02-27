@@ -2,10 +2,18 @@ name: Deploy to dev using serverless
 on:
   workflow_call:
     inputs:
-      branch:
-        description: branch to deploy to dev using serverless
-        required: false  
-        type: string      
+      repository_full_name:
+        description: "Personal access token from secrets"
+        required: true
+        type: string
+      client_payload_ref:
+        description: 'Client payload reference'
+        required: true
+        type: string
+      environment:
+        description: 'Environment to be deployed to'
+        required: true
+        type: string    
 
   repository_dispatch:
     types: [deploy-dev]
