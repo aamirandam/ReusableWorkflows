@@ -9,10 +9,14 @@ on:
       client_payload_ref:
         description: 'Client payload reference'
         required: true
-        type: string   
+        type: string 
+      environment:
+        description: 'Environment to run'
+        required: true
+        type: string
 
   repository_dispatch:
-    types: [deploy-dev]
+    types: [deploy-dev, deploy-staging, deploy-prod]
 
 # Considered secure as they are scoped to the workflow run and are not exposed to the outside world
 env:
