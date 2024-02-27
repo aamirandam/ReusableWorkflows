@@ -33,6 +33,7 @@ jobs:
         run: |
           # Send a POST request to rosie repo
           # curl -H "Accept: application/vnd.github.everest-preview+json" \
+          # echo'ing for testing purposes
           echo -H "Authorization:  token $PERSONAL_ACCESS_TOKEN" \
           echo -H "Content-type: application/json" \
           echo --data '{"event_type": "ecr-upload", "client_payload": {
