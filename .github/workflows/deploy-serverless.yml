@@ -1,0 +1,80 @@
+name: Deploy to dev using serverless
+on:
+  workflow_call:
+    inputs:
+      repository_full_name:
+        description: 'Repository full name'
+        required: true     
+        type: string
+      client_payload_ref:
+        description: 'Client payload reference'
+        required: true
+        type: string   
+
+  repository_dispatch:
+    types: [deploy-dev]
+
+# Considered secure as they are scoped to the workflow run and are not exposed to the outside world
+env:
+  NOTIFY-SLACK-PATH: ./.github/workflows/notify_slack.yml
+  REPOSITORY_FULL_NAME: ${{ inputs.repository_full_name }}
+  CLIENT_PAYLOAD_REF: ${{ inputs.client_payload_ref }}
+
+jobs:
+  notify-slack-build:
+    uses: ${{ NOTIFY-SLACK-PATH }}
+    with:
+      repo-full-name: $REPOSITORY_FULL_NAME
+      client-payload-ref: $CLIENT_PAYLOAD_REF
+      environment: 'dev'
+    secrets: inherit
+
+  deploy-to-dev:
+    name: deploy
+    runs-on: ubuntu-latest
+    outputs:
+      output_result: 'success'
+      
+    steps:
+      - env:
+          OUTPUT_RESULT: ${{needs.job1.outputs.output_result}}
+          
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          ref: $CLIENT_PAYLOAD_REF
+
+      - name: Set up node.js version
+        uses: actions/setup-node@master
+        with:
+          node-version: 18.x
+      - run: npm install -g yarn serverless
+      - run: yarn install
+
+      - name: Serverless Authentication
+        run: sls config credentials --provider aws --key ${{secrets.AWS_ACCESS_KEY_ID}} --secret ${{secrets.AWS_SECRET_ACCESS_KEY}}
+
+      - name: Deploy to dev
+        run: echo $OUTPUT_RESULT # serverless deploy --stage dev
+
+  notify-slack-status-success:
+    name: Notify Slack status for successful deployment
+    needs: deploy-to-dev
+    if: ${{ success() && needs.deploy-to-dev.result == 'success' }}
+    uses: ${{ NOTIFY-SLACK-PATH }}
+    with:
+      repo-full-name: $REPOSITORY_FULL_NAME
+      client-payload-ref: $CLIENT_PAYLOAD_REF
+      build-status-message: 'PR Build Complete'
+    secrets: inherit
+  
+  notify-slack-status-failure:
+    name: Notify Slack status for failed deployment
+    needs: deploy-to-dev
+    if: ${{ failure() || needs.deploy-to-dev.result != 'success' }}
+    uses: ${{ NOTIFY-SLACK-PATH }}
+    with:
+      repo-full-name: $REPOSITORY_FULL_NAME
+      client-payload-ref: $CLIENT_PAYLOAD_REF
+      build-status-message: 'PR Build Failed'
+    secrets: inherit
