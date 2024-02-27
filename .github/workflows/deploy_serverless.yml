@@ -15,17 +15,12 @@ on:
         required: true
         type: string
 
-# Considered secure as they are scoped to the workflow run and are not exposed to the outside world
-env:
-  REPOSITORY_FULL_NAME: ${{ inputs.repository_full_name }}
-  CLIENT_PAYLOAD_REF: ${{ inputs.client_payload_ref }}
-
 jobs:
   notify-slack-build:
     uses: ./.github/workflows/notify_slack.yml
     with:
-      repo-full-name: $REPOSITORY_FULL_NAME
-      client-payload-ref: $CLIENT_PAYLOAD_REF
+      repo-full-name: ${{ inputs.repository_full_name }}
+      client-payload-ref: ${{ inputs.client_payload_ref }}
       environment: 'dev'
     secrets: inherit
 
@@ -39,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
         with:
-          ref: $CLIENT_PAYLOAD_REF
+          ref: ${{ inputs.client_payload_ref }}
 
       - name: Set up node.js version
         uses: actions/setup-node@master
@@ -60,8 +55,8 @@ jobs:
     if: ${{ success() && needs.deploy-to-dev.result == 'success' }}
     uses: ./.github/workflows/notify_slack.yml
     with:
-      repo-full-name: $REPOSITORY_FULL_NAME
-      client-payload-ref: $CLIENT_PAYLOAD_REF
+      repo-full-name: ${{ inputs.repository_full_name }}
+      client-payload-ref: ${{ inputs.client_payload_ref }}
       build-status-message: 'PR Build Complete'
     secrets: inherit
   
@@ -71,7 +66,7 @@ jobs:
     if: ${{ failure() || needs.deploy-to-dev.result != 'success' }}
     uses: ./.github/workflows/notify_slack.yml
     with:
-      repo-full-name: $REPOSITORY_FULL_NAME
-      client-payload-ref: $CLIENT_PAYLOAD_REF
+      repo-full-name: ${{ inputs.repository_full_name }}
+      client-payload-ref: ${{ inputs.client_payload_ref }}
       build-status-message: 'PR Build Failed'
     secrets: inherit
