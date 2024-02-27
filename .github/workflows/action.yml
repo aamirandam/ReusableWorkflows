@@ -1,22 +1,34 @@
 name: 'Example composite GitHub action'
 description: 'Example composite GitHub action'
-author: hello@cloudposse.com
-branding:
-  icon: 'file'
-  color: 'white'
 inputs:
-  param1:
+  region:
+    description: 'AWS region' #.dkr.ecr.us-east-1.amazonaws.com
     required: true
-    description: "Input parameter placeholder"
-    default: "true"
-outputs:
-  result1:
-    description: "Output result placeholder"
-    value: "${{ steps.context.outputs.action-result }}"
+    type: string
+  latest:
+    description: 'latest'     # cheddartv/antenna:latest
+    required: true
+    type: string
+  stable:
+    description: 'stable'     # cheddartv/antenna:stable
+    required: true
+    type: string
+  sha:
+    description: 'Sha'
+    required: true
+    type: string
+  environment:
+    description: 'Environment to deploy'
+    required: true
+    type: string
 runs:
   using: "composite"
   steps:
-    - id: context
-      shell: bash
-      run: |
-          echo "action-result=${{ inputs.param1 }}" >> $GITHUB_OUTPUT
+    - name: build 1
+      uses: ./.github/workflows/build-image-1.yml
+      
+    - name: create file
+      uses: ./.github/workflows/create-env-file.yml
+      
+    - name: build docker
+      uses: ./.github/workflows/docker-buildx.yml
