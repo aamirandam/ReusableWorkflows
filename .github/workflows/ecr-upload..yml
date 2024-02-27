@@ -1,0 +1,48 @@
+name: Build and upload ECR image
+on:
+  workflow_call:
+    inputs:
+      repository_full_name:
+        description: "Personal access token from secrets"
+        required: true
+        type: string
+      sha:
+        description: "GitHub actions sha"
+        required: true
+        type: string
+      actor:
+        description: "GitHub actor"
+        required: true       
+        type: string
+      environment:
+        description: 'Environment to be deployed to'
+        required: true
+        type: string
+jobs:
+  ecr-upload:
+    name: ECR stable upload
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Trigger a repo dispatch to build and upload ECR Image
+        id: build-upload
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        
+        run: |
+          # Send a POST request to rosie repo
+          # curl -H "Accept: application/vnd.github.everest-preview+json" \
+          echo -H "Authorization:  token $PERSONAL_ACCESS_TOKEN" \
+          echo -H "Content-type: application/json" \
+          echo --data '{"event_type": "ecr-upload", "client_payload": {
+          echo "ref": "master",
+          echo "repo": "${{ inputs.repository_full_name }}",
+          echo "tags": "stable-${{ inputs.sha }},latest",
+          echo "sha": "${{ inputs.sha }}",
+          echo "actor": "${{ inputs.actor }}",
+          echo "channel": "${{ secrets.PLATFORMS_BOTS }}",
+          echo "env": "TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          echo }}' \
+          echo --request POST \
+          echo --url https://api.github.com/repos/cheddartv/rosie/dispatches
