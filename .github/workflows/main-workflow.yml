@@ -47,32 +47,32 @@ jobs:
     secrets: inherit
     
   # Job that calls a reusable workflow with the possibility to pass data
-  call-workflow-passing-data:
-    uses: ./.github/workflows/reusable-workflow.yml
-    with:
-      node-version: 'v16.14.0'
+  #call-workflow-passing-data:
+  #  uses: ./.github/workflows/reusable-workflow.yml
+  #  with:
+  #    node-version: 'v16.14.0'
     # Can enable to set secrets and pass them through environment variables  
     #secrets:
      #envPAT: ${{ secrets.envPAT }}
     
   # Job that calls a reusable 'external' workflow with the possibility to pass data
   # Commit Sha, Release Tag or Branch Name is required 
-  call-external-workflow-passing-data:
-    needs: call-workflow-passing-data
-    uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.2.0
-    with:
-      node-version: 'v16.14.0'
+  #call-external-workflow-passing-data:
+  #  needs: call-workflow-passing-data
+  #  uses: aamirandam/ExternalWorkflow/.github/workflows/external-workflow.yml@v1.2.0
+  #  with:
+  #    node-version: 'v16.14.0'
 
   
     
   finishing:
-    needs: [call-workflow-passing-data, call-external-workflow-passing-data]
+    #needs: [call-workflow-passing-data, call-external-workflow-passing-data]
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Calling action 
-        uses: ./.github/actions/action.yml
+        uses: ./.github/actions/main/
         with:
           region: "dkr.ecr.us-east-1.amazonaws.com"
           latest: "cheddartv/antenna:latest"
