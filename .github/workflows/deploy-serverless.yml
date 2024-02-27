@@ -58,6 +58,7 @@ jobs:
       repository_full_name: ${{ inputs.repository_full_name }}
       client_payload_ref: ${{ inputs.client_payload_ref }}
       build_status_message: 'PR Build Complete'
+      environment: 'dev'
     secrets: inherit
   
   notify-slack-status-failure:
@@ -69,4 +70,5 @@ jobs:
       repository_full_name: ${{ inputs.repository_full_name }}
       client_payload_ref: ${{ inputs.client_payload_ref }}
       build_status_message: 'PR Build Failed'
+      environment: 'dev'
     secrets: inherit
