@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:          
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.client_payload_ref }}
 
@@ -36,4 +36,5 @@ jobs:
         run: sls config credentials --provider aws --key ${{secrets.AWS_ACCESS_KEY_ID}} --secret ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Deploy to dev
-        run: echo "success" # serverless deploy --stage dev
+        run: echo "success" 
+        # serverless deploy --stage dev
