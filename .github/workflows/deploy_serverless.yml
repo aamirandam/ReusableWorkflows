@@ -16,20 +16,9 @@ on:
         type: string
 
 jobs:
-  notify-slack-build:
-    uses: ./.github/workflows/notify_slack.yml
-    with:
-      repo-full-name: ${{ inputs.repository_full_name }}
-      client-payload-ref: ${{ inputs.client_payload_ref }}
-      environment: 'dev'
-    secrets: inherit
-
   deploy-to-dev:
     name: deploy
     runs-on: ubuntu-latest
-    outputs:
-      output_result: 'success'
-      
     steps:          
       - name: Checkout
         uses: actions/checkout@v1
@@ -48,25 +37,3 @@ jobs:
 
       - name: Deploy to dev
         run: echo "success" # serverless deploy --stage dev
-
-  notify-slack-status-success:
-    name: Notify Slack status for successful deployment
-    needs: deploy-to-dev
-    if: ${{ success() && needs.deploy-to-dev.result == 'success' }}
-    uses: ./.github/workflows/notify_slack.yml
-    with:
-      repo-full-name: ${{ inputs.repository_full_name }}
-      client-payload-ref: ${{ inputs.client_payload_ref }}
-      build-status-message: 'PR Build Complete'
-    secrets: inherit
-  
-  notify-slack-status-failure:
-    name: Notify Slack status for failed deployment
-    needs: deploy-to-dev
-    if: ${{ failure() || needs.deploy-to-dev.result != 'success' }}
-    uses: ./.github/workflows/notify_slack.yml
-    with:
-      repo-full-name: ${{ inputs.repository_full_name }}
-      client-payload-ref: ${{ inputs.client_payload_ref }}
-      build-status-message: 'PR Build Failed'
-    secrets: inherit
