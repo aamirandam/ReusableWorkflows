@@ -34,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
         with:
-          ref: $CLIENT_PAYLOAD_REF
+          ref: ${{ inputs.client_payload_ref }}
 
       - name: Set up node.js version
         uses: actions/setup-node@master
