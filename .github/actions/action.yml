@@ -1,0 +1,34 @@
+name: 'Example composite GitHub action'
+description: 'Example composite GitHub action'
+inputs:
+  region:
+    description: 'AWS region' #.dkr.ecr.us-east-1.amazonaws.com
+    required: true
+    type: string
+  latest:
+    description: 'latest'     # cheddartv/antenna:latest
+    required: true
+    type: string
+  stable:
+    description: 'stable'     # cheddartv/antenna:stable
+    required: true
+    type: string
+  sha:
+    description: 'Sha'
+    required: true
+    type: string
+  environment:
+    description: 'Environment to deploy'
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: build 1
+      uses: ./.github/workflows/build-image-1.yml
+      
+    - name: create file
+      uses: ./.github/workflows/create-env-file.yml
+      
+    - name: build docker
+      uses: ./.github/workflows/docker-buildx.yml
