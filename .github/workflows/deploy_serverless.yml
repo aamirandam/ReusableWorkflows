@@ -17,7 +17,7 @@ on:
 
 jobs:
   deploy-to-dev:
-    name: deploy
+    name: Deploy to Dev
     runs-on: ubuntu-latest
     steps:          
       - name: Checkout
