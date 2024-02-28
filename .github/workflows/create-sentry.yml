@@ -1,0 +1,32 @@
+---
+name: Sentry io creation
+on: 
+  workflow_call:
+    inputs:
+      sentry_auth_token:
+        description: 'sentry auth token'
+        required: true
+        type: string
+      repository_name:
+        description: 'repository name'
+        required: true
+        type: string
+      sha:
+        description: 'sha'
+        required: true
+        type: string
+jobs:
+  create-sentry:
+    # needs: [call-deploy-serverless] #[call-workflow-passing-data, call-external-workflow-passing-data]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create a Sentry.io release
+      if: ${{ inputs.sentry_auth_token != '' }}
+      uses: tclindner/sentry-releases-action@v1.0.0
+      env:
+        SENTRY_AUTH_TOKEN: ${{ inputs.sentry-auth-token }}
+        SENTRY_ORG: cheddar
+        SENTRY_PROJECT: ${{ inputs.repository_name }}
+      with:
+        tagName: ${{ inputs.sha }}  # github.event.client_payload.sha
+        environment: production
