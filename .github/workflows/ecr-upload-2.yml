@@ -1,0 +1,103 @@
+--- 
+name: PR image to ECR
+on:
+  workflow_call:
+
+jobs:
+  call-notify-slack-start:
+    uses: ./.github/workflows/notify_slack.yml
+    with:
+      repository_full_name: ${{ github.event.repository.full_name }}
+      client_payload_ref: ${{ github.event.client_payload.ref }} 
+      build_status_message: 'success'
+      environment: 'dev'
+    secrets: inherit
+    
+  ecr-build-upload:
+    name: ECR-build-upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: get job url
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ECR-build-upload
+    
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.client_payload.ref }}
+          repository: ${{ github.event.client_payload.repo }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker Layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-${{ github.event.client_payload.repo }}-${{ github.event.client_payload.sha}}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.event.client_payload.repo }}-
+
+      - name: Login to Amazon ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.AWS_ACCOUNT_NUMBER }}.dkr.ecr.us-east-1.amazonaws.com
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Split Tags
+        id: tags
+        env:
+          REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.dkr.ecr.us-east-1.amazonaws.com
+          REPOSITORY: ${{ github.event.client_payload.repo }}
+        run: |
+          TAGS=${{ github.event.client_payload.tags }}
+          REPO=${{ env.REGISTRY }}/${{ env.REPOSITORY }}
+          listTags=$(echo "$TAGS" | sed -E 's@([^,]+)@'"$REPO"':\1@g')
+          echo "::set-output name=docker_tags::$listTags"
+
+      - name: Build and Tag Image
+        uses: docker/build-push-action@v2
+        env:
+          REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.dkr.ecr.us-east-1.amazonaws.com
+          REPOSITORY: ${{ github.event.client_payload.repo }}
+        with:
+          context: .
+          build-args: ${{ github.event.client_payload.env }}
+          # outputs: type=docker
+          tags: ${{ steps.tags.outputs.docker_tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          push: true
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Push Image
+      #   env:
+      #     REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.dkr.ecr.us-east-1.amazonaws.com
+      #   run: docker push $REGISTRY/${{ github.event.client_payload.repo }}
+
+      - name: Create a Sentry.io release
+        if: ${{ github.event.client_payload.sentry-auth-token != '' }}
+        uses: tclindner/sentry-releases-action@v1.0.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ github.event.client_payload.sentry-auth-token }}
+          SENTRY_ORG: cheddar
+          SENTRY_PROJECT: ${{ github.event.client_payload.repo-name }}
+        with:
+          tagName: ${{ github.event.client_payload.sha }}
+          environment: production
+
+  call-notify-slack-end:
+    uses: ./.github/workflows/notify_slack.yml
+    with:
+      repository_full_name: ${{ github.event.repository.full_name }}
+      client_payload_ref: ${{ github.event.client_payload.ref }} 
+      build_status_message: 'success'
+      environment: 'dev'
+    secrets: inherit
