@@ -82,16 +82,13 @@ jobs:
       #     REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.dkr.ecr.us-east-1.amazonaws.com
       #   run: docker push $REGISTRY/${{ github.event.client_payload.repo }}
 
-      - name: Create a Sentry.io release
-        if: ${{ github.event.client_payload.sentry-auth-token != '' }}
-        uses: tclindner/sentry-releases-action@v1.0.0
-        env:
-          SENTRY_AUTH_TOKEN: ${{ github.event.client_payload.sentry-auth-token }}
-          SENTRY_ORG: cheddar
-          SENTRY_PROJECT: ${{ github.event.client_payload.repo-name }}
-        with:
-          tagName: ${{ github.event.client_payload.sha }}
-          environment: production
+  call-create-sentry:
+    uses: ./.github/workflows/create-sentry.yml
+    with:
+      sentry_auth_token: ${{ github.event.client_payload.sentry-auth-token }}
+      repository_name: ${{ github.event.client_payload.repo-name }}
+      sha: ${{ github.event.client_payload.sha }}
+    secrets: inherit
 
   call-notify-slack-end:
     uses: ./.github/workflows/notify_slack.yml
