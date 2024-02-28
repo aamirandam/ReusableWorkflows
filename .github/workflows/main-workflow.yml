@@ -64,20 +64,9 @@ jobs:
   #    node-version: 'v16.14.0'
 
   
-    
-  finishing:
-    # needs: [call-deploy-serverless] #[call-workflow-passing-data, call-external-workflow-passing-data]
-    runs-on: ubuntu-latest
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Calling action 
-        uses: ../.github/actions/main@v1
-        with:
-          region: "dkr.ecr.us-east-1.amazonaws.com"
-          latest: "cheddartv/antenna:latest"
-          stable: "cheddartv/antenna:stable"
-          sha: ${{ github.sha }}
-          environment: 'dev'
+  call-ecr-upload-2:
+    uses: ./.github/workflows/ecr-upload-2.yml
+    secrets: inherit
+  
         
      
