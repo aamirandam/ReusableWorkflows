@@ -2,7 +2,11 @@
 name: PR image to ECR
 on:
   workflow_call:
-
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        type: string
 jobs:
   call-notify-slack-start:
     uses: ./.github/workflows/notify_slack.yml
