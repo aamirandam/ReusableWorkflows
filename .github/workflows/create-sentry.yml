@@ -23,10 +23,6 @@ on:
         description: 'Tag name'
         required: true
         type: string
-      sha:
-        description: 'Sha'
-        required: true
-        type: string
 jobs:
   create-sentry:
     name: Create Sentry
