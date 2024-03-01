@@ -49,9 +49,11 @@ jobs:
     uses: ./.github/workflows/create-sentry.yml
     needs: ecr-build-upload
     with:
-      sentry_auth_token: ${{ github.event.client_payload.sentry-auth-token }}
-      repository_name: ${{ github.event.client_payload.repo-name }}
-      sha: ${{ github.event.client_payload.sha }}
+      environment: 'dev'
+      sentry-auth-token: ${{ github.event.client_payload.sentry-auth-token }}
+      sentry-org: 'cheddar'
+      sentry-project: ${{ github.event.client_payload.repo-name }}
+      tag-name: ${{ github.event.client_payload.sha }}
     secrets: inherit
 
   call-notify-slack-end:
