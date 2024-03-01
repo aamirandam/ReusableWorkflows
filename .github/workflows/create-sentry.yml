@@ -24,6 +24,18 @@ on:
         required: true
         type: string
 jobs:
+  show-inputs:
+    name: Show Inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Showing Inputs
+        run: |-
+          SAT: ${{ inputs.sentry-auth-token }}
+          SORG: ${{ inputs.sentry-org }}
+          SPROJ: ${{ inputs.sentry-project }}
+          TAG: ${{ inputs.tag-name }}
+          ENV: ${{ inputs.environment }}
+    
   create-sentry:
     name: Create Sentry
     runs-on: ubuntu-latest
