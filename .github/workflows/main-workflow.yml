@@ -68,7 +68,7 @@ jobs:
     uses: ./.github/workflows/create-sentry.yml
     with:
       environment: 'dev'
-      sentry-auth-token: ''
+      sentry-auth-token: 'empty'
       sentry-org: 'cheddar'
       sentry-project: ${{ github.event.repository.full_name }}
       tag-name: ${{ github.sha }}
