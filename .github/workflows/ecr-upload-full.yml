@@ -1,0 +1,130 @@
+---
+name: PR image to ECR
+on: 
+  workflow_call:
+    inputs:
+      repo_full_name:
+        description: 'Repository full name'
+        required: true
+        type: string
+      ref:
+        description: 'Project reference: main'
+        required: true
+        type: string
+      sha:
+        description: 'Sha'
+        required: true
+        type: string
+      registry:
+        description: 'Registry'
+        required: true
+        type: string
+      repository:
+        description: 'Registry'
+        required: true
+        type: string
+      sentry_auth_token:
+        description: 'Sentry auth token'
+        type: string
+      sentry_org:
+        description: 'Sentry org'
+        required: true
+        type: string
+      region:
+        description: 'AWS Region'
+        required: true
+        type: string
+jobs:
+  notify-slack-build:
+    uses: ./.github/workflows/notify-slack.yml
+    with:
+      repo_full_name: ${{ inputs.repo_full_name }}
+      ref: ${{ inputs.ref }}
+      environment: 'dev'
+    secrets: inherit
+
+  ecr-build-upload:
+    name: ECR-build-upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: get job url
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ECR-build-upload
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.ref }}
+          repository: ${{ inputs.repo_full_name }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Cache Docker Layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-${{ inputs.repo_full_name }}-${{ inputs.sha}}
+          restore-keys: |
+            ${{ runner.os }}-${{ inputs.repo_full_name }}-
+  
+      - name: Login to Amazon ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{inputs.region}}
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
+      - name: Split Tags
+        id: tags
+        env:
+          REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{inputs.region}}
+          REPOSITORY: ${{ inputs.repo_full_name }}
+        run: |
+            TAGS="stable-${{ inputs.sha }},latest",
+            REPO=${{ env.REGISTRY }}/${{ env.REPOSITORY }}
+            listTags=$(echo "$TAGS" | sed -E 's@([^,]+)@'"$REPO"':\1@g')
+            echo "::set-output name=docker_tags::$listTags"
+  
+      - name: Build and Tag Image
+        uses: docker/build-push-action@v2
+        env:
+          REGISTRY: ${{ secrets.AWS_ACCOUNT_NUMBER }}.${{inputs.region}}
+          REPOSITORY: ${{ inputs.repo_full_name }}
+        with:
+          context: .
+          build-args: "TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          # outputs: type=docker
+          tags: ${{ steps.tags.outputs.docker_tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          push: true
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+  call-create-sentry:
+    uses: ./.github/workflows/create-sentry.yml
+    with:
+      environment: 'dev'
+      sentry-auth-token: ${{ inputs.sentry_auth_token }} 
+      sentry-org: ${{ inputs.sentry_org }}
+      sentry-project: ${{ inputs.repo_full_name }}
+      tag-name: ${{ github.sha }}
+    secrets: inherit
+        
+  notify-slack-status-failure:
+    name: Notify Slack status for failed deployment
+    needs: ecr-build-upload
+    if: ${{ failure() || needs.ecr-build-upload.result != 'success' }}
+    uses: ./.github/workflows/notify_slack.yml
+    with:
+        repo_full_name: ${{ inputs.repo_full_name }}
+        ref: ${{ inputs.ref }}
+        build_status_message: 'PR Build Failed'
+        environment: 'dev'
+    secrets: inherit
