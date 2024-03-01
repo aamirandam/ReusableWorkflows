@@ -14,6 +14,13 @@ on:
 
 # Sequential jobs run in parallel
 jobs:
+  show-vals:
+    runs-on: ubuntu latest
+    steps:
+      - name: run this
+        run: |-
+          ${{ github.event.client_payload }}
+     
   notify-slack:
     uses: ./.github/workflows/notify_slack.yml
     with:
