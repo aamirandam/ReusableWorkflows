@@ -75,6 +75,8 @@ jobs:
   
   call-ecr-upload-2:
     uses: ./.github/workflows/ecr-upload-2.yml
+    with:
+      environment: 'dev'
     secrets: inherit
   
         
