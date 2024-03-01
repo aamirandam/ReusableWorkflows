@@ -63,6 +63,15 @@ jobs:
   #  with:
   #    node-version: 'v16.14.0'
 
+  call-create-sentry:
+    uses: ./.github/workflows/create-sentry.yml
+    with:
+      environment: 'dev'
+      sentry-auth-token: ${{ github.event.client_payload.sentry-auth-token }}
+      sentry-org: 'cheddar'
+      sentry-project: ${{ github.event.client_payload.repo-name }}
+      tag-name: ${{ github.event.client_payload.sha }}
+    secrets: inherit
   
   call-ecr-upload-2:
     uses: ./.github/workflows/ecr-upload-2.yml
