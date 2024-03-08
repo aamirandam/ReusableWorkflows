@@ -12,7 +12,7 @@ jobs:
       - name: Set private variable
         id: set-tag 
         run: |
-          if [ ${{ github.event.action }} == 'opened' || ${{ github.event.action }} == 'synchronize' ]; then
+          if `[ ${{ github.event.action }} == 'opened' || ${{ github.event.action }} == 'synchronize' ]`; then
             echo "tag=pre-release" >> $GITHUB_OUTPUT
           else
             echo "tag=stable" >> $GITHUB_OUTPUT
