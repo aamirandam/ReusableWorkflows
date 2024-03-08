@@ -1,4 +1,4 @@
-name: Example Workflow
+name: testing PR Workflow
 
 on:
   pull_request:
