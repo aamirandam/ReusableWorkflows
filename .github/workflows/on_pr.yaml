@@ -10,13 +10,14 @@ jobs:
     
     steps:
       - name: Set private variable
+        id: set-tag 
         run: |
           if [ ${{ github.event.action }} == 'opened' || ${{ github.event.action }} == 'synchronize' ]; then
-            echo "::set-output name=TAG::pre-release"
+            echo "tag=pre-release" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=TAG::latest, stable"
+            echo "tag=stable" >> $GITHUB_OUTPUT
           fi
 
       - name: Use private variable
         run: |
-          echo "Private variable value: $TAG"
+          echo "Private variable value: ${{ steps.set-tag.outputs.tag }}"
