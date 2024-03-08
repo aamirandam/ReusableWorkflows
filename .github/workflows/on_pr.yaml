@@ -1,0 +1,22 @@
+name: Example Workflow
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  example_job:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Set private variable
+        run: |
+          if [ ${{ github.event.action }} == 'opened' || ${{ github.event.action }} == 'synchronize' ]; then
+            echo "::set-output name=TAG::pre-release"
+          else
+            echo "::set-output name=TAG::latest, stable"
+          fi
+
+      - name: Use private variable
+        run: |
+          echo "Private variable value: $TAG"
