@@ -1,4 +1,4 @@
-name: CI
+name: WFDCI
 
 on:
   workflow_dispatch:
