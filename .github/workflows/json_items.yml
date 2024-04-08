@@ -9,8 +9,7 @@ jobs:
     steps:
       - name: Create env file items
         run: | 
-          env_file_items=$(echo '[{"AWS_ACCESS_KEY_ID":"${{ secrets.AWS_ACCESS_KEY_ID }}"}, {"AWS_SECRET_ACCESS_KEY":"${{ secrets.AWS_SECRET_ACCESS_KEY }}"}, {"AUTH_TOKEN":"${{ secrets.AUTH_TOKEN }}"}, {"CONTENTFUL_ACCESS_TOKEN":"${{ secrets.CONTENTFUL_ACCESS_TOKEN }}"}, { "CONTENTFUL_CHEDDAR_CDA_TOKEN":"${{ secrets.CONTENTFUL_CHEDDAR_CDA_TOKEN }}"}, "{ CONTENTFUL_CHEDDAR_SPACE_ID":"${{ secrets.CONTENTFUL_CHEDDAR_SPACE_ID }}"}, {"CONTENTFUL_ENVIRONMENT_ID":"${{ secrets.CONTENTFUL_ENVIRONMENT_ID }}"}, {"CONTENTFUL_NEWS12_CDA_TOKEN":"${{ secrets.CONTENTFUL_NEWS12_CDA_TOKEN }}"}, "{ CONTENTFUL_NEWS12_SPACE_ID":"${{ secrets.CONTENTFUL_NEWS12_SPACE_ID }}"}, {"SENTRY_DSN":"${{ secrets.SENTRY_DSN }}"},"{ SLACK_FEED_ALERT_WEBHOOK_URL":"${{ secrets.SLACK_FEED_ALERT_WEBHOOK_URL }}"}
-          ]"
+          env_file_items=$(echo '[{"AWS_ACCESS_KEY_ID":"${{ secrets.TEST }}"}, {"AWS_SECRET_ACCESS_KEY":"${{ secrets.TEST }}"}, {"AUTH_TOKEN":"${{ secrets.TEST }}"}, {"CONTENTFUL_ACCESS_TOKEN":"${{ secrets.TEST }}"}, { "CONTENTFUL_CHEDDAR_CDA_TOKEN":"${{ secrets.TEST }}"}, "{ CONTENTFUL_CHEDDAR_SPACE_ID":"${{ secrets.TEST }}"}, {"CONTENTFUL_ENVIRONMENT_ID":"${{ secrets.TEST }}"}, {"CONTENTFUL_NEWS12_CDA_TOKEN":"${{ secrets.TEST }}"}, "{ CONTENTFUL_NEWS12_SPACE_ID":"${{ secrets.TEST }}"}, {"SENTRY_DSN":"${{ secrets.TEST }}"},"{ SLACK_FEED_ALERT_WEBHOOK_URL":"${{ secrets.TEST }}"}]"
         id: set_env_file
 
       - name: Use Env File Items
