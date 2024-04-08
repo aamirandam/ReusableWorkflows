@@ -19,3 +19,16 @@ jobs:
         env:
           ENV_FILE_ITEMS: ${{ steps.set_env_file.outputs.ENV_FILE_ITEMS }}
         id: use_env_file
+          
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: sss sss
+        run: |
+          items="${{ inputs.env_file_items }}"
+          names=()
+          for row in $(echo "${items}" | jq -r '.[]'); do
+              name=$(echo "${row}" | jq -r '.name')
+              names+=("$name")
+          done
+          printf "%s\n" "${names[@]}"
