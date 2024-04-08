@@ -24,10 +24,11 @@ jobs:
 
       - name: sss sss
         run: |
-          items="${{ inputs.env_file_items }}"
+          items=""
           names=()
           for row in $(echo "${items}" | jq -r '.[]'); do
               name=$(echo "${row}" | jq -r '.name')
               names+=("$name")
           done
-          echo $names()
+          echo "${names[@]}"  # Correct way to access the entire array
+
