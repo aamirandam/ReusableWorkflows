@@ -30,4 +30,5 @@ jobs:
               name=$(echo "${row}" | jq -r '.name')
               names+=("$name")
           done
-          printf "%s\n" "${names[@]}"
+          echo "%s\n" "${names[@]}"
+          echo $names()
