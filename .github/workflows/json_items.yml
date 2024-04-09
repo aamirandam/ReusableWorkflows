@@ -25,7 +25,7 @@ jobs:
       - name: sss sss
         run: |
           rows=""
-          for row in $(echo "${items}" | jq -c '.[]'); do
+          for row in $(echo "${ENV_FILE_ITEMS}" | jq -c '.[]'); do
               rows="${rows}${row} "
           done
           
