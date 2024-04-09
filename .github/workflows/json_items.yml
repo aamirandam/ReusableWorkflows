@@ -22,10 +22,12 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: sss sss
+      - name: sss 
+        env:
+          items: ${{ steps.set_env_file.outputs.ENV_FILE_ITEMS }}
         run: |
           rows=""
-          for row in $(echo "${ENV_FILE_ITEMS}" | jq -c '.[]'); do
+          for row in $(echo "${items}" | jq -c '.[]'); do
               rows="${rows}${row} "
           done
           
