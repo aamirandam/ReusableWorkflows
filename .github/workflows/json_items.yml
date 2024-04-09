@@ -28,5 +28,6 @@ jobs:
 
           for pair in $(echo "${INPUT_JSON}" | jq -r '.[] | to_entries[] | "\(.key)=\(.value)"'); do
             export "$pair"
+            echo $(pair)
           done
 
