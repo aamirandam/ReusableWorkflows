@@ -26,15 +26,22 @@ jobs:
         env:
           items: ${{ steps.set_env_file.outputs.ENV_FILE_ITEMS }}
         run: |
+          # Debugging statement: Print the original JSON string
+          echo "Original JSON string:"
+          echo "${items}"      
           rows=""
           for row in $(echo "${items}" | jq -c '.[]'); do
+              # Debugging statement: Print each row obtained from jq
+              echo "Current row:"
+              echo "${row}"      
               rows="${rows}${row} "
               echo "${rows}${row}"
-          done
-          
+          done          
+          # Print the concatenated rows
+          echo "Concatenated rows:"
+          echo "${rows}"          
           # Export the concatenated rows as an environment variable
-          export ROWS="${rows}"
-          
+          export ROWS="${rows}"          
           # Print the environment variable to verify
           echo "Rows stored in ROWS environment variable:"
           echo "${ROWS}"
