@@ -24,11 +24,15 @@ jobs:
 
       - name: sss sss
         run: |
-          items=""
-          names=()
-          for row in $(echo "${items}" | jq -r '.[]'); do
-              name=$(echo "${row}" | jq -r '.name')
-              names+=("$name")
+          rows=""
+          for row in $(echo "${items}" | jq -c '.[]'); do
+              rows="${rows}${row} "
           done
-          echo "${names[@]}"  # Correct way to access the entire array
+          
+          # Export the concatenated rows as an environment variable
+          export ROWS="${rows}"
+          
+          # Print the environment variable to verify
+          echo "Rows stored in ROWS environment variable:"
+          echo "${ROWS}"
 
