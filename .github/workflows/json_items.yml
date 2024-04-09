@@ -29,6 +29,7 @@ jobs:
           rows=""
           for row in $(echo "${items}" | jq -c '.[]'); do
               rows="${rows}${row} "
+              echo ${rows}${row}
           done
           
           # Export the concatenated rows as an environment variable
