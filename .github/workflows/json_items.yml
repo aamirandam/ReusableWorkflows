@@ -22,27 +22,11 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: sss 
-        env:
-          items: ${{ steps.set_env_file.outputs.ENV_FILE_ITEMS }}
+      - name: Set Environment Variables
         run: |
-          # Debugging statement: Print the original JSON string
-          echo "Original JSON string:"
-          echo "${items}"      
-          rows=""
-          for row in $(echo "${items}" | jq -c '.[]'); do
-              # Debugging statement: Print each row obtained from jq
-              echo "Current row:"
-              echo "${row}"      
-              rows="${rows}${row} "
-              echo "${rows}${row}"
-          done          
-          # Print the concatenated rows
-          echo "Concatenated rows:"
-          echo "${rows}"          
-          # Export the concatenated rows as an environment variable
-          export ROWS="${rows}"          
-          # Print the environment variable to verify
-          echo "Rows stored in ROWS environment variable:"
-          echo "${ROWS}"
+          INPUT_JSON='[{"AWS_ACCESS_KEY_ID":"${{ secrets.TEST }}"}, {"AWS_SECRET_ACCESS_KEY":"${{ secrets.TEST }}"}, {"AUTH_TOKEN":"${{ secrets.TEST }}"}, {"CONTENTFUL_ACCESS_TOKEN":"${{ secrets.TEST }}"}, { "CONTENTFUL_CHEDDAR_CDA_TOKEN":"${{ secrets.TEST }}"}, { "CONTENTFUL_CHEDDAR_SPACE_ID":"${{ secrets.TEST }}"}, {"CONTENTFUL_ENVIRONMENT_ID":"${{ secrets.TEST }}"}, {"CONTENTFUL_NEWS12_CDA_TOKEN":"${{ secrets.TEST }}"}, { "CONTENTFUL_NEWS12_SPACE_ID":"${{ secrets.TEST }}"}, {"SENTRY_DSN":"${{ secrets.TEST }}"},{"SLACK_FEED_ALERT_WEBHOOK_URL":"${{ secrets.TEST }}"}]'
+
+          for pair in $(echo "${INPUT_JSON}" | jq -r '.[] | to_entries[] | "\(.key)=\(.value)"'); do
+            export "$pair"
+          done
 
