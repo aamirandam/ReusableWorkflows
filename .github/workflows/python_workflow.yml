@@ -1,0 +1,17 @@
+name: python workflow
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  python:
+    name: run python
+    runs-on: ubuntu-latest
+    steps:
+    - name: trigger install
+      id: installing-pygithub
+      env:
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}        
+      run: |
+        pip install PyGithub
