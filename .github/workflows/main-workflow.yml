@@ -64,15 +64,15 @@ jobs:
   #  with:
   #    node-version: 'v16.14.0'
 
-  call-create-sentry:
-    uses: ./.github/workflows/create-sentry.yml
-    with:
-      environment: 'dev'
-      sentry-auth-token: 'empty'
-      sentry-org: 'cheddar'
-      sentry-project: ${{ github.event.repository.full_name }}
-      tag-name: ${{ github.sha }}
-    secrets: inherit
+  #call-create-sentry:
+  #  uses: ./.github/workflows/create-sentry.yml
+  #  with:
+  #    environment: 'dev'
+  #    sentry-auth-token: 'empty'
+  #    sentry-org: 'cheddar'
+  #    sentry-project: ${{ github.event.repository.full_name }}
+  #    tag-name: ${{ github.sha }}
+  #  secrets: inherit
   
   #call-ecr-upload-2:
   #  uses: ./.github/workflows/ecr-upload-2.yml
