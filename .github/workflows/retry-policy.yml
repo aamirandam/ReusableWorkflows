@@ -12,25 +12,31 @@ jobs:
       id: checkout
       uses: actions/checkout@v2
 
-    - name: Run command with retries
+    - name: Run command
       id: run_command
       run: |
-        retries=3
+        max_retries=5
         count=0
-        until [ "$count" -ge "$retries" ]
-        do
-          if command_to_run; then
-            exit 0
-          fi
-          count=$((count+1))
-          echo "Attempt $count failed. Retrying in 5 seconds..."
-          sleep 5
-        done
-        exit 1 # Fail after retries
+        success=false
 
-    - name: Rerun checkout on failure
-      if: failure()
-      uses: actions/checkout@v2
+        while [ $count -lt $max_retries ]; do
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://swapi.dev/api/people/1/)
+          echo "HTTP response code: $response"
+
+          if [ "$response" -eq 200 ]; then
+            success=true
+            break
+          else
+            echo "Request failed. Retry $((count+1))/$max_retries..."
+            count=$((count+1))
+            sleep 10  # Wait for 10 seconds before retrying
+          fi
+        done
+
+        if [ "$success" = false ]; then
+          echo "Curl request failed after $max_retries retries."
+          exit 1
+        fi
 
     - name: Notify failure
       if: failure()
