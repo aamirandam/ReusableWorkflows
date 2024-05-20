@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  example_job:
+  tagging:
     runs-on: ubuntu-latest
     
     steps:

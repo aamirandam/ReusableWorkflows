@@ -1,0 +1,43 @@
+name: CI with reusable and external workflows 
+
+on: [push, pull_request]
+
+jobs:
+  call-retry-policy:
+    name: ECR-build-upload
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      id: checkout
+      uses: actions/checkout@v2
+
+    - name: Run command
+      id: run_command
+      run: |
+        max_retries=5
+        count=0
+        success=false
+
+        while [ $count -lt $max_retries ]; do
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://swapi.dev/api/people/1/)
+          echo "HTTP response code: $response"
+
+          if [ "$response" -eq 200 ]; then
+            success=true
+            break
+          else
+            echo "Request failed. Retry $((count+1))/$max_retries..."
+            count=$((count+1))
+            sleep 10  # Wait for 10 seconds before retrying
+          fi
+        done
+
+        if [ "$success" = false ]; then
+          echo "Curl request failed after $max_retries retries."
+          exit 1
+        fi
+
+    - name: Notify failure
+      if: failure()
+      run: echo "Command failed after retries and checkout rerun."
