@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   call-retry-policy:
-    name: ECR-build-upload
+    name: Retry policy
     runs-on: ubuntu-latest
 
     steps:
